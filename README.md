@@ -1,4 +1,3 @@
-<img width="737" height="748" alt="Screenshot 2025-12-27 231724" src="https://github.com/user-attachments/assets/7876da7c-ec25-4313-99fe-d0023a54fc29" />
 # I2CS_Ex2
 This is third assaigemnt counting from 0 in course Intro to computer science in Ariel University.
 
