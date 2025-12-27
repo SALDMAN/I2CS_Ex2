@@ -1,29 +1,76 @@
 /**
+ * Simple 2D integer coordinate implementing the Pixel2D interface.
+ *
+ * This class is a lightweight value object that stores an (x,y) integer pair
+ * and provides basic operations that are required by the exercise codebase:
+ * - construction from integer coordinates or from another Pixel2D
+ * - accessors for x and y
+ * - Euclidean distance computation to another Pixel2D
+ * - equals and toString (note: toString currently returns null and should be implemented by the student)
+ *
+ * Instances are immutable in practice (there are no public setters).
+ * Typical usage: new Index2D(3,4) or new Index2D(existingPixel)
  *
  * @author Yair
  */
-
 public class Index2D implements Pixel2D {
     private int x;
     private int y;
+
+    /**
+     * Constructs a new Index2D with the provided coordinates.
+     *
+     * @param w the x-coordinate (column)
+     * @param h the y-coordinate (row)
+     */
     public Index2D(int w, int h) {
         x=w;
         y=h;
     }
+
+    /**
+     * Constructs a new Index2D by copying coordinates from another Pixel2D.
+     *
+     * Note: this constructor dereferences the provided Pixel2D, so if {@code other}
+     * is null the call will produce a NullPointerException at runtime.
+     *
+     * @param other the Pixel2D to copy from (must be non-null)
+     */
     public Index2D(Pixel2D other)
     {
      x=other.getX();
      y=other.getY();
     }
+
+    /**
+     * Returns the x coordinate of this index.
+     *
+     * @return x coordinate (column)
+     */
     @Override
     public int getX() {
         return x;
     }
 
+    /**
+     * Returns the y coordinate of this index.
+     *
+     * @return y coordinate (row)
+     */
     @Override
     public int getY() {
         return y;
     }
+
+    /**
+     * Computes the Euclidean distance between this index and another Pixel2D.
+     *
+     * Behavior note: the implementation returns 0 when the provided argument is null.
+     * Mathematically this method returns sqrt((x - other.x)^2 + (y - other.y)^2).
+     *
+     * @param p2 the other Pixel2D to measure distance to (may be null)
+     * @return Euclidean distance as a double; 0 if {@code p2} is null
+     */
     @Override
     public double distance2D(Pixel2D p2) {
         if(p2==null){
@@ -32,12 +79,29 @@ public class Index2D implements Pixel2D {
         return Math.sqrt(Math.pow(x-p2.getX(),2)+Math.pow(y-p2.getY(),2));
     }
 
+    /**
+     * Returns a string representation of this Index2D.
+     *
+     * Implementation note: the current implementation returns {@code null} (a placeholder).
+     * A more useful implementation would return a string such as "Index2D{x=3,y=4}".
+     *
+     * @return string representation or null in the current placeholder implementation
+     */
     @Override
     public String toString() {
         String ans = null;
         return ans;
     }
 
+    /**
+     * Equality is defined by type and coordinate equality.
+     *
+     * The method returns true when the provided object is also an Index2D and has the
+     * same x and y values. It returns false for null or objects of other types.
+     *
+     * @param p object to compare to
+     * @return true if {@code p} is an Index2D with identical coordinates; false otherwise
+     */
     @Override
     public boolean equals(Object p) {
         if(p==null){
