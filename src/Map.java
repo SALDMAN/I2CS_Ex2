@@ -3,7 +3,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * This class represents a 2D map (int[w][h]) as a "screen" or a raster matrix or maze over integers.
@@ -25,8 +27,7 @@ import java.util.List;
  * Usage example (high level):
  * Map m = new Map(10, 10, 0);
  * m.drawRect(new Pixel2D(1,1), new Pixel2D(3,3), 5);
- * Pixel2D[] path = m.shortestPath(new Pixel2D(0,0), new Pixel2D(9,9), -1, false);
- */
+ **/
 public class Map implements Map2D, Serializable{
 
     private int[][] map;
@@ -58,7 +59,7 @@ public class Map implements Map2D, Serializable{
     public Map(int[][] data) {
         init(data);
     }
-
+    @Override
     /**
      * Initialize this Map to the given width and height and fill every pixel with value v.
      * This method replaces the internal buffer with a newly allocated array.
@@ -67,7 +68,6 @@ public class Map implements Map2D, Serializable{
      * @param v initial value to fill
      * @throws RuntimeException for invalid dimensions
      */
-    @Override
     public void init(int w, int h, int v) {
         if (w <= 0 || h <= 0) {
             throw new RuntimeException("Invalid dimensions");
@@ -79,14 +79,13 @@ public class Map implements Map2D, Serializable{
             Arrays.fill(this.map[x], v);
         }
     }
-
+    @Override
     /**
      * Initialize this Map from a rectangular 2D array by performing a defensive copy.
      * The provided array is interpreted as int[width][height]. All rows must be the same length.
      * @param arr a rectangular 2D int array (outer length = width, inner length = height)
      * @throws RuntimeException if arr is null, empty, ragged, or has zero height
      */
-    @Override
     public void init(int[][] arr) {
         if (arr == null || arr.length == 0) {
             throw new RuntimeException("Array is null or empty");
@@ -106,14 +105,13 @@ public class Map implements Map2D, Serializable{
             System.arraycopy(arr[x], 0, this.map[x], 0, h);
         }
     }
-
+    @Override
     /**
      * Returns a defensive copy of the internal int[][] map array.
      * The returned array has dimensions [width][height], and callers may modify it
      * without affecting this Map instance.
      * @return a newly allocated 2D int array containing the same pixel values
      */
-    @Override
     public int[][] getMap() {
         int[][] ans = new int[this.width][this.height];
         for (int x = 0; x < this.width; x++) {
@@ -121,29 +119,27 @@ public class Map implements Map2D, Serializable{
         }
         return ans;
     }
-
+    @Override
     /**
      * Get the map width (number of columns).
      * @return width the current width
      */
-    @Override
     public int getWidth() {
         int ans = this.width;
 
         return ans;
     }
-
+    @Override
     /**
      * Get the map height (number of rows).
      * @return height the current height
      */
-    @Override
     public int getHeight() {
         int ans = this.height;
 
         return ans;
     }
-
+    @Override
     /**
      * Read a single pixel value at coordinates (x,y).
      * Coordinates follow the convention: 0 <= x < width and 0 <= y < height.
@@ -152,14 +148,13 @@ public class Map implements Map2D, Serializable{
      * @return the integer value stored at (x,y)
      * @throws RuntimeException if the coordinates are outside the map bounds
      */
-    @Override
     public int getPixel(int x, int y) {
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
             throw new RuntimeException("Pixel out of bounds");
         }
         return this.map[x][y];
     }
-
+    @Override
     /**
      * Read a single pixel using a Pixel2D object.
      * Validates that the pixel object is non-null and delegates to getPixel(x,y).
@@ -167,12 +162,11 @@ public class Map implements Map2D, Serializable{
      * @return the integer value at the pixel
      * @throws RuntimeException if p is null or its coordinates are outside the map
      */
-    @Override
     public int getPixel(Pixel2D p) {
         if (p == null) throw new RuntimeException("Null pixel");
         return getPixel(p.getX(), p.getY());
     }
-
+    @Override
     /**
      * Set the value of a pixel at (x,y) to v.
      * @param x column index
@@ -180,7 +174,6 @@ public class Map implements Map2D, Serializable{
      * @param v new integer value for the pixel
      * @throws RuntimeException if coordinates are outside the map bounds
      */
-    @Override
     public void setPixel(int x, int y, int v) {
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
             throw new RuntimeException("Pixel out of bounds");
@@ -188,49 +181,48 @@ public class Map implements Map2D, Serializable{
         this.map[x][y] = v;
 
     }
-
+    @Override
     /**
      * Set a pixel's value using a Pixel2D object.
      * @param p Pixel2D coordinate to set
      * @param v new integer value
      * @throws RuntimeException if p is null or out of bounds
      */
-    @Override
     public void setPixel(Pixel2D p, int v) {
         if (p == null) throw new RuntimeException("Null pixel");
         setPixel(p.getX(), p.getY(), v);
 
     }
 
+    @Override
     /**
      * Check whether the provided Pixel2D is inside the map bounds.
      * This method returns false for a null argument.
      * @param p the Pixel2D to test
      * @return true if inside the map, false otherwise
      */
-    @Override
     public boolean isInside(Pixel2D p) {
         if (p == null) return false;
         return p.getX() >= 0 && p.getX() < this.width && p.getY() >= 0 && p.getY() < this.height;
     }
 
+    @Override
     /**
      * Check whether another Map2D has the same dimensions as this one.
      * @param p the other Map2D to compare to
      * @return true if both maps are non-null and have equal width and height
      */
-    @Override
     public boolean sameDimensions(Map2D p) {
         if (p == null) return false;
         return this.width == p.getWidth() && this.height == p.getHeight();
     }
 
+    @Override
     /**
      * Add another Map2D to this one element-wise. The operation is performed in-place.
      * If the dimensions do not match, the method returns without modifying this map.
      * @param p a Map2D to add element-wise
      */
-    @Override
     public void addMap2D(Map2D p) {
         if (!sameDimensions(p)) return;
         for (int x = 0; x < this.width; x++) {
@@ -240,12 +232,12 @@ public class Map implements Map2D, Serializable{
         }
     }
 
+    @Override
     /**
      * Multiply every pixel by the given scalar value. The result is rounded to the nearest integer.
      * This operation is performed in-place.
      * @param scalar the multiplication factor (double); pixels are cast back to int using Math.round
      */
-    @Override
     public void mul(double scalar) {
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
@@ -255,6 +247,7 @@ public class Map implements Map2D, Serializable{
 
     }
 
+    @Override
     /**
      * Rescale the map using nearest-neighbor sampling. The method computes new integer dimensions
      * using Math.round on the provided scale factors and re-samples the image into a new internal buffer.
@@ -262,7 +255,6 @@ public class Map implements Map2D, Serializable{
      * @param sy scale factor in Y (height) dimension; must be > 0
      * @throws RuntimeException if either scale factor is not positive
      */
-    @Override
     public void rescale(double sx, double sy) {
         if (sx <= 0 || sy <= 0) throw new RuntimeException("Scale must be positive");
         int newW = Math.max(1, (int) Math.round(this.width * sx));
@@ -270,7 +262,7 @@ public class Map implements Map2D, Serializable{
         int[][] dst = new int[newW][newH];
         for (int x = 0; x < newW; x++) {
             for (int y = 0; y < newH; y++) {
-                /** nearest neighbor sampling */
+                // nearest neighbor sampling
                 int srcX = Math.min(this.width - 1, Math.max(0, (int) Math.floor(x / sx)));
                 int srcY = Math.min(this.height - 1, Math.max(0, (int) Math.floor(y / sy)));
                 dst[x][y] = this.map[srcX][srcY];
@@ -281,6 +273,7 @@ public class Map implements Map2D, Serializable{
         this.map = dst;
     }
 
+    @Override
     /**
      * Draw a filled circle on the map using the given integer color.
      * The circle includes all pixels whose Euclidean distance from the center is <= rad.
@@ -290,7 +283,6 @@ public class Map implements Map2D, Serializable{
      * @param color integer color (value) to set for covered pixels
      * @throws RuntimeException if center is null
      */
-    @Override
     public void drawCircle(Pixel2D center, double rad, int color) {
         if (center == null) throw new RuntimeException("Center null");
         for (int x = 0; x < this.width; x++) {
@@ -303,6 +295,7 @@ public class Map implements Map2D, Serializable{
         }
     }
 
+    @Override
     /**
      * Draw a straight line between two pixel endpoints using simple interpolation and rounding.
      * The implementation iterates along the dominant axis (x or y) and rounds the orthogonal coordinate
@@ -312,12 +305,11 @@ public class Map implements Map2D, Serializable{
      * @param color integer color to set along the line
      * @throws RuntimeException if either endpoint is null
      */
-    @Override
     public void drawLine(Pixel2D p1, Pixel2D p2, int color) {
         if (p1 == null || p2 == null) throw new RuntimeException("Null endpoint");
         int x1 = p1.getX(), y1 = p1.getY();
         int x2 = p2.getX(), y2 = p2.getY();
-        /** handle identical endpoints */
+        // handle identical
         if (x1 == x2 && y1 == y2) {
             if (isInside(p1)) setPixel(p1, color);
             return;
@@ -344,6 +336,7 @@ public class Map implements Map2D, Serializable{
         }
     }
 
+    @Override
     /**
      * Draw a filled axis-aligned rectangle between p1 and p2 (inclusive). Coordinates outside the map
      * are clipped and ignored.
@@ -352,7 +345,6 @@ public class Map implements Map2D, Serializable{
      * @param color integer color to fill the rectangle
      * @throws RuntimeException if either corner is null
      */
-    @Override
     public void drawRect(Pixel2D p1, Pixel2D p2, int color) {
         if (p1 == null || p2 == null) throw new RuntimeException("Null endpoint");
         int x1 = Math.min(p1.getX(), p2.getX());
@@ -366,13 +358,13 @@ public class Map implements Map2D, Serializable{
         }
     }
 
+    @Override
     /**
      * Compare this Map with another object for pixel-wise equality. The other object must implement Map2D
      * and have the same dimensions. Equality is defined by identical integer values at every coordinate.
      * @param ob any object (typically another Map2D)
      * @return true if ob is a Map2D with same dimensions and identical pixels; false otherwise
      */
-    @Override
     public boolean equals(Object ob) {
         if (ob == null) return false;
         if (!(ob instanceof Map2D)) return false;
@@ -385,7 +377,7 @@ public class Map implements Map2D, Serializable{
         }
         return true;
     }
-
+    @Override
     /**
      * Fill (flood-fill) algorithm starting from pixel xy and replacing all connected pixels
      * that have the same value as the starting pixel with new_v. The connectivity is 4-way (N,E,S,W).
@@ -398,7 +390,6 @@ public class Map implements Map2D, Serializable{
      * @param cyclic when true the search wraps around edges (toroidal topology)
      * @return the number of pixels that were changed from the original value to new_v
      */
-    @Override
     public int fill(Pixel2D xy, int new_v,  boolean cyclic) {
         if (xy == null || !isInside(xy)) return 0;
         int sx = xy.getX();
@@ -417,7 +408,7 @@ public class Map implements Map2D, Serializable{
                 setPixel(cx, cy, new_v);
                 filled++;
             }
-            /** neighbors 4-way */
+            // neighbors 4-way
             int[][] nbrs = {{1,0},{-1,0},{0,1},{0,-1}};
             for (int[] d : nbrs) {
                 int nx = cx + d[0];
@@ -438,6 +429,7 @@ public class Map implements Map2D, Serializable{
         return filled;
     }
 
+    @Override
     /**
      * Compute the shortest path between p1 and p2 using BFS on the raster grid where
      * pixels equal to obsColor are treated as obstacles (untraversable).
@@ -452,7 +444,6 @@ public class Map implements Map2D, Serializable{
      * @param cyclic whether the BFS should wrap around the borders
      * @return Pixel2D[] ordered from start to goal if a path exists; null otherwise
      */
-    @Override
     public Pixel2D[] shortestPath(Pixel2D p1, Pixel2D p2, int obsColor, boolean cyclic) {
         if (p1 == null || p2 == null) return null;
         if (!isInside(p1) || !isInside(p2)) return null;
@@ -488,7 +479,7 @@ public class Map implements Map2D, Serializable{
             }
         }
         if (!found) return null;
-        /** reconstruct path */
+        // reconstruct path
         List<Pixel2D> path = new ArrayList<>();
         Index2D cur = new Index2D(p2);
         while (cur != null && !cur.equals(start)) {
@@ -501,7 +492,7 @@ public class Map implements Map2D, Serializable{
         for (int i = 0; i < path.size(); i++) ans[i] = path.get(path.size() - 1 - i);
         return ans;
     }
-
+    @Override
     /**
      * Compute the distance (in number of steps) from start to every reachable pixel using BFS.
      * Cells equal to obsColor are treated as obstacles and left as -1 in the returned Map2D.
@@ -514,7 +505,6 @@ public class Map implements Map2D, Serializable{
      * @param cyclic whether to treat the domain as toroidal (wrap-around)
      * @return a Map2D where each pixel contains the shortest distance from start or -1
      */
-    @Override
     public Map2D allDistance(Pixel2D start, int obsColor, boolean cyclic) {
         Map res = new Map(this.width, this.height, -1);
         if (start == null || !isInside(start)) return res;
