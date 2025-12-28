@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MapTest {
@@ -17,11 +18,37 @@ class MapTest {
     }
 
 
+
     @Test
     public void testDimensions2() {
         assertEquals(3, _m0.getWidth());
         assertEquals(3, _m0.getHeight());
     }
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
+    void init() {
+        int[][] bigarr = new int [500][500];
+        _m1.init(bigarr);
+        assertEquals(bigarr.length, _m1.getWidth());
+        assertEquals(bigarr[0].length, _m1.getHeight());
+        Pixel2D p1 = new Index2D(3,2);
+        _m1.fill(p1,1, true);
+    }
+
+    @Test
+    void testInit() {
+        _m0.init(_map_3_3);
+        _m1.init(_map_3_3);
+        assertEquals(_m0, _m1);
+    }
+    @Test
+    void testEquals() {
+        assertEquals(_m0,_m1);
+        _m0.init(_map_3_3);
+        _m1.init(_map_3_3);
+        assertEquals(_m0,_m1);
+    }
+
 
     @Test
     public void testSetAndGetPixel2() {
@@ -276,4 +303,5 @@ class MapTest {
         dist = m.allDistance(start, 1, false);
         assertEquals(-1, dist.getPixel(4,0));
     }
+
 }
