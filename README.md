@@ -127,3 +127,14 @@ Invalid inputs (null pixels, out-of-bounds) are handled by early returns (often 
 Obstacles (obsColor) are never enqueued or assigned distances in BFS algorithms.
 When the starting pixel already has the target color in fill, the method returns immediately with 0 to avoid extra work.
 If you want, I can now paste short, commented pseudocode into the source files (as Javadoc-style comments) or add small private helper methods (neighbors/wrapCoord) to Map.java to reduce duplication in the BFS loops. Which would you prefer?
+
+
+
+
+Image of the run of the progrram :
+
+
+<img width="737" height="748" alt="Screenshot 2025-12-27 231724" src="https://github.com/user-attachments/assets/c1d9deed-5513-4d4f-b065-2d72e9b2df61" />
+
+
+
